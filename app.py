@@ -3,6 +3,7 @@ import json
 import threading
 from datetime import timedelta
 from flask import Flask, render_template, jsonify, request, send_file, redirect, session
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -425,6 +426,13 @@ _LOGIN_USERS = {
     "vanessa":    {"password": "Vanessa123",    "id": 23, "name": "Vanessa Culebras", "role": "empleado", "email": "vanessa@rodonverges.com",    "phone": "+34 93 000 00 23", "active": True,  "color": "red",    "sede": "Vilassar", "departamento": "laboral"},
     "montserrat": {"password": "Montserrat123", "id": 24, "name": "Montserrat Mir",   "role": "empleado", "email": "montserrat@rodonverges.com", "phone": "+34 93 000 00 24", "active": True,  "color": "brown",  "sede": "Vilassar", "departamento": "fiscal"},
 }
+
+# ── Hash de contrasenyes en memòria (s'executa una sola vegada a l'arrencada) ──
+# Les contrasenyes en text pla només existeixen a les línies de dalt per facilitar
+# la configuració inicial. Des d'aquí en endavant es treballa sempre amb hashes.
+for _u, _rec in _LOGIN_USERS.items():
+    _rec["password"] = generate_password_hash(_rec["password"])
+logger.info("✅ [Seguretat] Contrasenyes hashejades en memòria (werkzeug PBKDF2)")
 
 # ═══════════════════════════════════════════════════════════════
 # ALMACENAMIENTO GLOBAL — ESTRUCTURA CLARA
@@ -1219,7 +1227,7 @@ def api_login():
     password = data.get("password") or ""
 
     user_rec = _LOGIN_USERS.get(username)
-    if not user_rec or user_rec["password"] != password or not user_rec.get("active"):
+    if not user_rec or not check_password_hash(user_rec["password"], password) or not user_rec.get("active"):
         # Incrementa el comptador de fallades
         with _login_lock:
             entry = _login_attempts.setdefault(ip, {"count": 0, "blocked_until": None})
@@ -1512,8 +1520,9 @@ def crear_usuario():
     if username.lower() in usernames_existents:
         return jsonify({'ok': False, 'error': f"El username '{username}' ja existeix"}), 409
 
-    # Generar contrasenya automàtica
-    password = generar_password_username(username)
+    # Generar contrasenya automàtica i hashear-la
+    password_plain = generar_password_username(username)
+    password_hash  = generate_password_hash(password_plain)
 
     # Generar nou ID (el màxim actual + 1)
     nou_id = max((u['id'] for u in USUARIOS), default=0) + 1
@@ -1526,11 +1535,24 @@ def crear_usuario():
         'departamento': departamento,
         'rol':          rol,
         'sede':         sede,
-        'password':     password   # ← contrasenya generada automàticament
     }
 
     USUARIOS.append(nou_usuari)
-    logger.info(f"✅ [Usuari] Creat: {nombre} (username: {username}, pass: {password})")
+
+    # Afegir a _LOGIN_USERS perquè pugui autenticar-se via API
+    _LOGIN_USERS[username.lower()] = {
+        'password':     password_hash,
+        'id':           nou_id,
+        'name':         nombre,
+        'role':         rol,
+        'email':        email,
+        'phone':        '',
+        'active':       True,
+        'color':        'teal',
+        'sede':         sede,
+        'departamento': departamento,
+    }
+    logger.info(f"✅ [Usuari] Creat: {nombre} (username: {username})")
 
     # Crear chats de sede automàticament
     create_seat_chats(nou_id, nombre, sede)
@@ -1538,8 +1560,32 @@ def crear_usuario():
     return jsonify({
         'ok':      True,
         'usuario': nou_usuari,
-        'password_generada': password   # ← es mostra un sol cop, aquí
+        'password_generada': password_plain   # ← es mostra un sol cop per comunicar-ho a l'usuari
     }), 201
+
+
+@app.route('/api/usuarios/<username>/password', methods=['PATCH'])
+def canviar_password(username):
+    """
+    Canvia la contrasenya d'un usuari existent.
+    Body JSON: { "password": "novaContrasenya" }
+    La nova contrasenya es valida (mínim 6 caràcters) i s'emmagatzema com a hash.
+    """
+    username = username.strip().lower()
+    if username not in _LOGIN_USERS:
+        return jsonify({'ok': False, 'error': 'Usuari no trobat.'}), 404
+
+    data = request.get_json(force=True) or {}
+    nova = (data.get('password') or '').strip()
+
+    if len(nova) < 6:
+        return jsonify({'ok': False, 'error': 'La contrasenya ha de tenir mínim 6 caràcters.'}), 400
+
+    _LOGIN_USERS[username]['password'] = generate_password_hash(nova)
+    logger.info(f"[Password] Contrasenya actualitzada per a {username}")
+    return jsonify({'ok': True})
+
+
 # ═══════════════════════════════════════════════════════════════
 # API WHATSAPP — ENVÍO AUTOMÁTICO
 # ═══════════════════════════════════════════════════════════════

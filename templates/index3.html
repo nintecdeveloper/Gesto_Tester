@@ -4615,139 +4615,19 @@
       }
 
       let USERS = [
-        // ✅ ADMINS (únicos usuarios existentes que se mantienen)
-        {
-          id: 1,
-          username: "antonio",
-          password: "admin123",
-          name: "Antonio",
-          role: "admin",
-          email: "antonio@rodonverges.com",
-          phone: "+34 93 000 00 01",
-          active: true,
-          color: "teal",
-          sede: "Mataró",
-        },
-        {
-          id: 3,
-          username: "pau",
-          password: "pau123",
-          name: "Pau",
-          role: "admin",
-          email: "pau@rodonverges.com",
-          phone: "+34 93 000 00 03",
-          active: true,
-          color: "orange",
-          sede: "Vilassar",
-        },
-
-        // ✅ USUARIOS MATARÓ (nuevos)
-        {
-          id: 10,
-          username: "myriam",
-          password: "Myriam123",
-          name: "Myriam Recolons",
-          role: "empleado",
-          email: "myriam@rodonverges.com",
-          phone: "+34 93 000 00 10",
-          active: true,
-          departamento: "laboral",
-          color: "blue",
-          sede: "Mataró",
-        },
-        {
-          id: 11,
-          username: "anna_f",
-          password: "Anna123",
-          name: "Anna Fabregà",
-          role: "empleado",
-          email: "anna.f@rodonverges.com",
-          phone: "+34 93 000 00 11",
-          active: true,
-          departamento: "fiscal",
-          color: "purple",
-          sede: "Mataró",
-        },
-        {
-          id: 12,
-          username: "montse",
-          password: "Montse123",
-          name: "Montse Martín",
-          role: "empleado",
-          email: "montse@rodonverges.com",
-          phone: "+34 93 000 00 12",
-          active: true,
-          departamento: "mercantil",
-          color: "pink",
-          sede: "Mataró",
-        },
-
-        // ✅ USUARIOS VILASSAR (nuevos)
-        {
-          id: 20,
-          username: "cristina",
-          password: "Cristina123",
-          name: "Cristina Navas",
-          role: "empleado",
-          email: "cristina@rodonverges.com",
-          phone: "+34 93 000 00 20",
-          active: true,
-          departamento: "fiscal",
-          color: "green",
-          sede: "Vilassar",
-        },
-        {
-          id: 21,
-          username: "anna_l",
-          password: "Anna123",
-          name: "Anna Llinas",
-          role: "empleado",
-          email: "anna.l@rodonverges.com",
-          phone: "+34 93 000 00 21",
-          active: true,
-          departamento: "laboral",
-          color: "cyan",
-          sede: "Vilassar",
-        },
-        {
-          id: 22,
-          username: "anna_m",
-          password: "Anna123",
-          name: "Anna Maria Rodón",
-          role: "empleado",
-          email: "anna.m@rodonverges.com",
-          phone: "+34 93 000 00 22",
-          active: true,
-          departamento: "mercantil",
-          color: "yellow",
-          sede: "Vilassar",
-        },
-        {
-          id: 23,
-          username: "vanessa",
-          password: "Vanessa123",
-          name: "Vanessa Culebras",
-          role: "empleado",
-          email: "vanessa@rodonverges.com",
-          phone: "+34 93 000 00 23",
-          active: true,
-          departamento: "laboral",
-          color: "red",
-          sede: "Vilassar",
-        },
-        {
-          id: 24,
-          username: "montserrat",
-          password: "Montserrat123",
-          name: "Montserrat Mir",
-          role: "empleado",
-          email: "montserrat@rodonverges.com",
-          phone: "+34 93 000 00 24",
-          active: true,
-          departamento: "fiscal",
-          color: "brown",
-          sede: "Vilassar",
-        },
+        // ADMINS
+        { id: 1,  username: "antonio",    name: "Antonio",          role: "admin",    email: "antonio@rodonverges.com",    phone: "+34 93 000 00 01", active: true, color: "teal",   sede: "Mataró" },
+        { id: 3,  username: "pau",        name: "Pau",              role: "admin",    email: "pau@rodonverges.com",        phone: "+34 93 000 00 03", active: true, color: "orange", sede: "Vilassar" },
+        // MATARÓ
+        { id: 10, username: "myriam",     name: "Myriam Recolons",  role: "empleado", email: "myriam@rodonverges.com",     phone: "+34 93 000 00 10", active: true, color: "blue",   sede: "Mataró",   departamento: "laboral" },
+        { id: 11, username: "anna_f",     name: "Anna Fabregà",     role: "empleado", email: "anna.f@rodonverges.com",     phone: "+34 93 000 00 11", active: true, color: "purple", sede: "Mataró",   departamento: "fiscal" },
+        { id: 12, username: "montse",     name: "Montse Martín",    role: "empleado", email: "montse@rodonverges.com",     phone: "+34 93 000 00 12", active: true, color: "pink",   sede: "Mataró",   departamento: "mercantil" },
+        // VILASSAR
+        { id: 20, username: "cristina",   name: "Cristina Navas",   role: "empleado", email: "cristina@rodonverges.com",   phone: "+34 93 000 00 20", active: true, color: "green",  sede: "Vilassar", departamento: "fiscal" },
+        { id: 21, username: "anna_l",     name: "Anna Llinas",      role: "empleado", email: "anna.l@rodonverges.com",     phone: "+34 93 000 00 21", active: true, color: "cyan",   sede: "Vilassar", departamento: "laboral" },
+        { id: 22, username: "anna_m",     name: "Anna Maria Rodón", role: "empleado", email: "anna.m@rodonverges.com",     phone: "+34 93 000 00 22", active: true, color: "yellow", sede: "Vilassar", departamento: "mercantil" },
+        { id: 23, username: "vanessa",    name: "Vanessa Culebras", role: "empleado", email: "vanessa@rodonverges.com",    phone: "+34 93 000 00 23", active: true, color: "red",    sede: "Vilassar", departamento: "laboral" },
+        { id: 24, username: "montserrat", name: "Montserrat Mir",   role: "empleado", email: "montserrat@rodonverges.com", phone: "+34 93 000 00 24", active: true, color: "brown",  sede: "Vilassar", departamento: "fiscal" },
       ];
 
       let SERVICES = [
@@ -5525,22 +5405,26 @@
       const MANDATORY_2FA = ['antonio', 'pau'];
 
       async function doLogin() {
-        const u = document.getElementById("login-user").value.trim();
+        const u = document.getElementById("login-user").value.trim().toLowerCase();
         const p = document.getElementById("login-pass").value;
         const errEl = document.getElementById("login-error");
+        errEl.style.display = "none";
+        errEl.textContent = "Usuari o contrasenya incorrectes.";
 
-        // Pas 1: validació local (UX ràpida, igual que abans)
-        const found = USERS.find(
-          (x) => x.username === u && x.password === p && x.active,
-        );
-        if (!found) {
+        if (!u || !p) {
+          errEl.textContent = "Introdueix usuari i contrasenya.";
           errEl.style.display = "block";
           return;
         }
-        errEl.style.display = "none";
 
-        // Pas 2: consulta al servidor per determinar estat 2FA
+        // Desactiva el botó mentre es fa la petició
+        const btn = document.querySelector('#login-credentials .btn-primary');
+        const origHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.textContent = "Verificant...";
+
         try {
+          // Validació exclusivament al servidor — cap contrasenya queda al JS
           const resp = await fetch('/api/login', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -5548,20 +5432,28 @@
           });
           const data = await resp.json();
 
-          if (!data.ok && !data.requires_2fa && !data.needs_2fa_setup) {
-            // Servidor ha rebutjat les credencials (p. ex. usuari inactiu)
+          if (data.blocked) {
+            errEl.textContent = data.error;
             errEl.style.display = "block";
             return;
           }
 
+          if (!data.ok && !data.requires_2fa && !data.needs_2fa_setup) {
+            errEl.style.display = "block";
+            return;
+          }
+
+          // Combina les dades locals (UI: avatar, color…) amb les del servidor
+          const localUser = USERS.find(x => x.username === u) || {};
+          const serverUser = data.user || {};
+          const userObj = { ...localUser, ...serverUser };
+
           if (data.requires_2fa) {
-            // Mostra el pas de verificació TOTP
-            _pending2faUser = found;
+            _pending2faUser = userObj;
             document.getElementById('login-credentials').style.display = 'none';
             document.getElementById('login-2fa-step').style.display = 'block';
             document.getElementById('tfa-error').style.display = 'none';
             document.getElementById('tfa-setup-notice').style.display = 'none';
-            // Neteja i focus al primer dígit
             const digits = document.querySelectorAll('.tfa-digit');
             digits.forEach(d => d.value = '');
             if (digits[0]) digits[0].focus();
@@ -5569,8 +5461,7 @@
           }
 
           if (data.needs_2fa_setup) {
-            // L'usuari ha d'anar a configurar el 2FA (primer ús obligatori)
-            _pending2faUser = found;
+            _pending2faUser = userObj;
             document.getElementById('login-credentials').style.display = 'none';
             document.getElementById('login-2fa-step').style.display = 'block';
             document.getElementById('tfa-error').style.display = 'none';
@@ -5578,19 +5469,16 @@
             return;
           }
 
-        } catch (e) {
-          // Error de xarxa: per a usuaris obligatoris no permetem el login
-          if (MANDATORY_2FA.includes(u.toLowerCase())) {
-            errEl.textContent = 'Error de connexió. No es pot verificar el 2FA.';
-            errEl.style.display = 'block';
-            return;
-          }
-          // Per a la resta d'usuaris, permet el login local
-          console.warn('[2FA] Error de connexió, login local:', e);
-        }
+          // Login directe sense 2FA
+          _finishLogin(userObj);
 
-        // Login directe (sense 2FA o error de xarxa per a usuaris no obligatoris)
-        _finishLogin(found);
+        } catch (e) {
+          errEl.textContent = "Error de connexió. Torneu-ho a provar.";
+          errEl.style.display = "block";
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = origHtml;
+        }
       }
 
       let _pending2faUser = null;
@@ -8616,7 +8504,7 @@ document.getElementById("nu-user").addEventListener("input", function() {
         document.getElementById("nu-save-btn").textContent = "Desar canvis";
         document.getElementById("nu-name").value = u.name;
         document.getElementById("nu-user").value = u.username;
-        document.getElementById("nu-pass").value = u.password || "";
+        document.getElementById("nu-pass").value = "";  // mai mostrem el hash
         document.getElementById("nu-email").value = u.email || "";
         document.getElementById("nu-phone").value = u.phone || "";
         document.getElementById("nu-role").value = u.role;
@@ -8687,22 +8575,30 @@ document.getElementById("nu-user").addEventListener("input", function() {
             u.phone = phone;
             u.role = role;
             u.departamento = role !== "admin" ? dept : null;
-            u.sede = sede; // NUEVO: actualizar sede
+            u.sede = sede;
             u.color = color;
-            if (pass) u.password = pass;
+            // Si s'ha introduït una nova contrasenya, enviar-la al servidor via API
+            if (pass && pass.length >= 6) {
+              fetch(`/api/usuarios/${encodeURIComponent(uname)}/password`, {
+                method: 'PATCH',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({password: pass})
+              }).then(r => r.json()).then(d => {
+                if (!d.ok) alert('Error canviant la contrasenya: ' + (d.error || ''));
+              }).catch(() => alert('Error de connexió en canviar la contrasenya.'));
+            }
           }
         } else {
           USERS.push({
             id: nextUserId++,
             username: uname,
-          password: finalPass,
             name,
             role,
             departamento: role !== "admin" ? dept : null,
             email,
             phone,
             active: true,
-            sede, // NUEVO: agregar sede a nuevos usuarios
+            sede,
             color,
           });
           // Guardar al backend
