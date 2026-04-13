@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configurar 2FA — Gestoria Rodonvergés</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1a2a4a 0%, #2d4a7a 50%, #1a3055 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #e8eaf6;
+      padding: 20px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 16px;
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 460px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .logo h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.3px;
+    }
+    .logo p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      margin-top: 4px;
+    }
+
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 20px;
+    }
+    .step-badge span {
+      display: inline-block;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      text-align: center;
+      line-height: 20px;
+      font-size: 11px;
+    }
+
+    h2 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .desc {
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.55;
+      margin-bottom: 24px;
+    }
+
+    /* STEP PANELS */
+    .step { display: none; }
+    .step.active { display: block; }
+
+    /* Username form */
+    .form-group { margin-bottom: 18px; }
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 8px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 11px 14px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 8px;
+      color: rgba(255,255,255,0.9);
+      font-size: 14px;
+      transition: border-color 0.2s, background 0.2s;
+      outline: none;
+    }
+    .form-group input:focus {
+      border-color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.11);
+    }
+    .form-group input::placeholder { color: rgba(255,255,255,0.35); }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary {
+      background: linear-gradient(135deg, #4a90d9, #2d6bb5);
+      color: #fff;
+    }
+    .btn-primary:hover { opacity: 0.92; }
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.85);
+      margin-top: 10px;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.15); }
+    .btn-success {
+      background: linear-gradient(135deg, #27ae60, #1e8449);
+      color: #fff;
+    }
+
+    /* QR area */
+    .qr-wrap {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 20px 0;
+      min-height: 190px;
+    }
+    .qr-wrap svg {
+      max-width: 160px;
+      height: auto;
+    }
+    .qr-wrap .qr-placeholder {
+      color: #888;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .secret-box {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      letter-spacing: 2px;
+      color: #a8d8ea;
+      word-break: break-all;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    /* 6-digit code input */
+    .code-input-wrap {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .code-digit {
+      width: 46px; height: 56px;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.07);
+      color: #fff;
+      font-size: 22px;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .code-digit:focus {
+      border-color: #4a90d9;
+      background: rgba(74,144,217,0.12);
+    }
+
+    .alert {
+      padding: 11px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .alert-error { background: rgba(231,76,60,0.2); border: 1px solid rgba(231,76,60,0.4); color: #f1948a; }
+    .alert-success { background: rgba(39,174,96,0.2); border: 1px solid rgba(39,174,96,0.4); color: #82e0aa; }
+
+    .info-list {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 24px;
+    }
+    .info-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.72);
+      margin-bottom: 12px;
+      line-height: 1.45;
+    }
+    .info-list .num {
+      min-width: 22px; height: 22px;
+      background: rgba(74,144,217,0.35);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: #a8d8ea;
+      flex-shrink: 0;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: rgba(255,255,255,0.7); }
+
+    .spinner {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Success screen */
+    .success-icon {
+      text-align: center;
+      font-size: 56px;
+      margin-bottom: 16px;
+    }
+    .success-icon::before { content: '✅'; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <h1>Gestoria Rodonvergés</h1>
+    <p>Configuració de l'autenticació en dos passos</p>
+  </div>
+
+  <!-- STEP 1: Identificació d'usuari -->
+  <div class="step active" id="step-user">
+    <h2>Qui ets?</h2>
+    <p class="desc">Introdueix el teu nom d'usuari per iniciar la configuració del 2FA.</p>
+    <div class="alert alert-error" id="err-user"></div>
+    <div class="form-group">
+      <label>Nom d'usuari</label>
+      <input type="text" id="inp-username" placeholder="exemple: antonio" autocomplete="username" />
+    </div>
+    <button class="btn btn-primary" onclick="startSetup()">Continuar</button>
+    <a href="/" class="back-link">← Tornar a l'aplicació</a>
+  </div>
+
+  <!-- STEP 2: Escaneja el QR -->
+  <div class="step" id="step-qr">
+    <h2>Escaneja el codi QR</h2>
+    <p class="desc">Obre la teva aplicació d'autenticació (Google Authenticator, Authy, etc.) i escaneja el codi.</p>
+
+    <div class="qr-wrap" id="qr-container">
+      <div class="qr-placeholder">Carregant QR...</div>
+    </div>
+
+    <p class="desc" style="font-size:12px; margin-bottom:8px;">O introdueix manualment aquest codi secret:</p>
+    <div class="secret-box" id="secret-display">—</div>
+
+    <ul class="info-list">
+      <li><span class="num">1</span> Obre <strong>Google Authenticator</strong> o <strong>Authy</strong> al teu mòbil.</li>
+      <li><span class="num">2</span> Prem el botó <strong>"+"</strong> i tria <strong>"Escaneja un codi QR"</strong>.</li>
+      <li><span class="num">3</span> Apunta la càmera al codi de dalt per afegir el compte.</li>
+    </ul>
+
+    <button class="btn btn-primary" onclick="goToVerify()">He escanejat el QR &rarr;</button>
+    <a href="/" class="back-link">← Cancel·lar i tornar</a>
+  </div>
+
+  <!-- STEP 3: Verificació del codi -->
+  <div class="step" id="step-verify">
+    <h2>Verifica el codi</h2>
+    <p class="desc">Introdueix el codi de 6 dígits que ara mostra la teva aplicació d'autenticació per confirmar la configuració.</p>
+
+    <div class="alert alert-error" id="err-verify"></div>
+
+    <div class="code-input-wrap" id="code-digits">
+      <input class="code-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" />
+      <input class="code-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" />
+      <input class="code-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" />
+      <input class="code-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" />
+      <input class="code-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" />
+      <input class="code-digit" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" />
+    </div>
+
+    <button class="btn btn-primary" onclick="verifyCode()">Confirmar i activar 2FA</button>
+    <button class="btn btn-secondary" onclick="goToStep('step-qr')">← Tornar al QR</button>
+  </div>
+
+  <!-- STEP 4: Èxit -->
+  <div class="step" id="step-success">
+    <div class="success-icon"></div>
+    <h2 style="text-align:center; margin-bottom:12px">2FA activat!</h2>
+    <p class="desc" style="text-align:center">
+      L'autenticació de doble factor s'ha configurat correctament.<br>
+      A partir d'ara hauràs d'introduir el codi de 6 dígits cada vegada que iniciïs sessió.
+    </p>
+    <button class="btn btn-success" onclick="window.location.href='/'">Anar a l'aplicació &rarr;</button>
+  </div>
+</div>
+
+<script>
+  let _username = '';
+  let _otpauthUri = '';
+
+  // ── Navegació entre passos ──────────────────────────────────
+  function goToStep(stepId) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById(stepId).classList.add('active');
+  }
+
+  // ── Pas 1: iniciar setup ────────────────────────────────────
+  async function startSetup() {
+    const inp = document.getElementById('inp-username');
+    _username = inp.value.trim().toLowerCase();
+    const errEl = document.getElementById('err-user');
+    errEl.style.display = 'none';
+
+    if (!_username) {
+      errEl.textContent = 'Introdueix el teu nom d\'usuari.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    const btn = document.querySelector('#step-user .btn-primary');
+    btn.innerHTML = '<span class="spinner"></span>Carregant...';
+    btn.disabled = true;
+
+    try {
+      const resp = await fetch('/api/2fa/setup', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({username: _username})
+      });
+      const data = await resp.json();
+
+      if (!data.ok) {
+        errEl.textContent = data.error || 'Error inesperat.';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      _otpauthUri = data.otpauth_uri;
+      renderQR(data.qr_svg, data.otpauth_uri);
+      document.getElementById('secret-display').textContent = formatSecret(data.secret);
+      goToStep('step-qr');
+
+    } catch (e) {
+      errEl.textContent = 'Error de connexió. Comprova que el servidor està actiu.';
+      errEl.style.display = 'block';
+    } finally {
+      btn.innerHTML = 'Continuar';
+      btn.disabled = false;
+    }
+  }
+
+  // ── Renderitza el QR ────────────────────────────────────────
+  function renderQR(svgData, fallbackUri) {
+    const container = document.getElementById('qr-container');
+    if (svgData) {
+      container.innerHTML = svgData;
+    } else {
+      // Fallback: link directe per obrir l'app
+      container.innerHTML = `<div class="qr-placeholder">
+        <p style="margin-bottom:8px">No s'ha pogut generar el QR.<br>Usa el codi secret manual.</p>
+        <a href="${escapeHtml(fallbackUri)}" style="font-size:11px;color:#4a90d9;word-break:break-all;">${escapeHtml(fallbackUri)}</a>
+      </div>`;
+    }
+  }
+
+  function formatSecret(s) {
+    // Afegeix un espai cada 4 caràcters per facilitar la lectura
+    return (s || '').replace(/(.{4})/g, '$1 ').trim();
+  }
+
+  function escapeHtml(s) {
+    return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Pas 2 → Pas 3 ──────────────────────────────────────────
+  function goToVerify() {
+    goToStep('step-verify');
+    // Focus al primer dígit
+    const digits = document.querySelectorAll('.code-digit');
+    digits.forEach(d => d.value = '');
+    if (digits[0]) digits[0].focus();
+  }
+
+  // ── Input de dígits ─────────────────────────────────────────
+  document.querySelectorAll('.code-digit').forEach((inp, idx, all) => {
+    inp.addEventListener('input', () => {
+      // Permet enganxar el codi complet al primer camp
+      const val = inp.value.replace(/\D/g, '');
+      if (val.length > 1) {
+        const digits = val.slice(0, 6).split('');
+        all.forEach((d, i) => d.value = digits[i] || '');
+        const last = Math.min(digits.length, all.length - 1);
+        all[last].focus();
+        return;
+      }
+      inp.value = val;
+      if (val && idx < all.length - 1) all[idx + 1].focus();
+    });
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && !inp.value && idx > 0) all[idx - 1].focus();
+      if (e.key === 'Enter') verifyCode();
+    });
+  });
+
+  // ── Pas 3: verificar el codi ─────────────────────────────────
+  async function verifyCode() {
+    const errEl = document.getElementById('err-verify');
+    errEl.style.display = 'none';
+
+    const digits = document.querySelectorAll('.code-digit');
+    const code = Array.from(digits).map(d => d.value).join('');
+
+    if (code.length !== 6 || !/^\d{6}$/.test(code)) {
+      errEl.textContent = 'Introdueix els 6 dígits del codi.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    const btn = document.querySelector('#step-verify .btn-primary');
+    btn.innerHTML = '<span class="spinner"></span>Verificant...';
+    btn.disabled = true;
+
+    try {
+      const resp = await fetch('/api/2fa/setup/verify', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({username: _username, code})
+      });
+      const data = await resp.json();
+
+      if (!data.ok) {
+        errEl.textContent = data.error || 'Codi incorrecte.';
+        errEl.style.display = 'block';
+        digits.forEach(d => d.value = '');
+        digits[0].focus();
+        return;
+      }
+
+      goToStep('step-success');
+
+    } catch (e) {
+      errEl.textContent = 'Error de connexió.';
+      errEl.style.display = 'block';
+    } finally {
+      btn.innerHTML = 'Confirmar i activar 2FA';
+      btn.disabled = false;
+    }
+  }
+
+  // Focus automàtic al camp d'usuari
+  document.getElementById('inp-username').focus();
+  document.getElementById('inp-username').addEventListener('keydown', e => {
+    if (e.key === 'Enter') startSetup();
+  });
+
+  // Si l'URL té ?user=... pre-omple l'usuari
+  const urlParams = new URLSearchParams(window.location.search);
+  const preUser = urlParams.get('user');
+  if (preUser) {
+    document.getElementById('inp-username').value = preUser;
+  }
+</script>
+</body>
+</html>
